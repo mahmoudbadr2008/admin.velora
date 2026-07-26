@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>لوحة التحكم  Admin</title>
+  <!-- Bootstrap 5 RTL CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Cairo (display/UI) + Tajawal (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Warm, jewelry-boutique palette instead of generic indigo/slate */
+      --bg-slate: #faf7f4;
+      --card-bg: #ffffff;
+      --primary: #7a2b45;          /* deep wine/berry — brand accent */
+      --primary-dark: #5e1f35;
+      --primary-soft: #f7e8ec;     /* soft blush tint */
+      --gold: #a9762f;             /* antique gold — price / signature accent */
+      --gold-soft: #f6efe1;
+      --text-main: #241b1d;
+      --text-muted: #8d7c7e;
+      --border-soft: #ecdfe1;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 6px 24px -6px rgba(122, 43, 69, 0.10);
+      --shadow-card-hover: 0 10px 30px -8px rgba(122, 43, 69, 0.16);
+    }
+
+    body {
+      background-color: var(--bg-slate);
+      background-image:
+        radial-gradient(circle at 100% 0%, rgba(169, 118, 47, 0.06), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(122, 43, 69, 0.05), transparent 40%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Tajawal', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding-bottom: 90px;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6, .fw-bold, .btn-primary-custom, .status-badge, .badge-count {
+      font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+    }
+
+    /* Header Styling */
+    .mobile-header {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    #header-title {
+      letter-spacing: 0.2px;
+    }
+
+    .badge-count {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      min-width: 30px;
+      text-align: center;
+      box-shadow: 0 3px 10px -2px rgba(122, 43, 69, 0.35);
+    }
+
+    /* Card Component */
+    .card-mobile {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      border-top: 3px solid var(--primary-soft);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-top-color 0.18s ease;
+    }
+    .card-mobile:active {
+      transform: scale(0.99);
+      box-shadow: var(--shadow-card-hover);
+      border-top-color: var(--gold);
+    }
+
+    /* Order Info UI */
+    .customer-info-box {
+      background: var(--gold-soft);
+      border-radius: var(--radius-md);
+      padding: 13px 15px;
+      margin: 12px 0;
+      line-height: 1.9;
+    }
+
+    .order-items-box {
+      background: #fbfaf8;
+      border: 1px dashed var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 11px 15px;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .price-tag {
+      background: var(--gold-soft);
+      color: var(--gold);
+      font-weight: 800;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      display: inline-block;
+      border: 1px solid rgba(169, 118, 47, 0.18);
+    }
+
+    /* Status Badges — warmer, boutique-toned */
+    .status-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.2px;
+    }
+    .status-new { background: #fdf0d8; color: #96591a; }
+    .status-preparing { background: var(--primary-soft); color: var(--primary-dark); }
+    .status-done { background: #e3f3e6; color: #1e6b3a; }
+
+    /* Upload Box */
+    .upload-box {
+      border: 2px dashed #d9c3c9;
+      border-radius: var(--radius-lg);
+      padding: 34px 16px;
+      text-align: center;
+      background: linear-gradient(180deg, #ffffff, #fdfaf8);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .upload-box:active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+    }
+    .upload-box i {
+      color: var(--primary) !important;
+    }
+
+    .upload-preview {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      display: none;
+      margin-top: 12px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .prod-img-mobile {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Form Inputs */
+    .form-control, .form-select {
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      border: 1px solid var(--border-soft);
+      background-color: #ffffff;
+      font-size: 14px;
+      color: var(--text-main);
+      font-family: 'Tajawal', sans-serif;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(122, 43, 69, 0.10);
+    }
+    .form-label {
+      color: var(--text-main);
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .btn-primary-custom {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #ffffff;
+      width: 100%;
+      letter-spacing: 0.2px;
+      box-shadow: 0 8px 20px -6px rgba(122, 43, 69, 0.45);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-primary-custom:active {
+      opacity: 0.92;
+      transform: scale(0.99);
+    }
+
+    /* Cohesion overrides for Bootstrap utility colors used inline in JS */
+    .text-primary { color: var(--primary) !important; }
+    .text-danger  { color: #b5433f !important; }
+    .text-success { color: #22a05d !important; }
+
+    /* Toasts (replace native alert) */
+    #toast-container {
+      position: fixed;
+      top: 14px;
+      left: 0;
+      right: 0;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      padding: 0 16px;
+    }
+
+    .app-toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 13px 18px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--text-main);
+      box-shadow: 0 12px 30px -8px rgba(36, 27, 29, 0.22);
+      border-right: 4px solid var(--gold);
+      max-width: 420px;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(-14px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .app-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .app-toast i { font-size: 17px; }
+    .app-toast-success { border-right-color: #22a05d; }
+    .app-toast-success i { color: #22a05d; }
+    .app-toast-warning { border-right-color: var(--gold); }
+    .app-toast-warning i { color: var(--gold); }
+    .app-toast-error { border-right-color: #b5433f; }
+    .app-toast-error i { color: #b5433f; }
+
+    /* Confirm modal (replaces native confirm) */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(36, 27, 29, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 2100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .confirm-overlay.show { opacity: 1; }
+
+    .confirm-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 20px 20px 0 0;
+      padding: 28px 22px 22px;
+      text-align: center;
+      transform: translateY(24px);
+      transition: transform 0.25s ease;
+      box-shadow: 0 -10px 40px -10px rgba(36, 27, 29, 0.3);
+    }
+    .confirm-overlay.show .confirm-card { transform: translateY(0); }
+
+    .confirm-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: #fbe9e7;
+      color: #b5433f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .confirm-message {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 15.5px;
+      color: var(--text-main);
+      margin-bottom: 22px;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 13px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .confirm-btn:active { transform: scale(0.98); }
+    .confirm-btn-cancel {
+      background: #f1ebec;
+      color: var(--text-main);
+    }
+    .confirm-btn-danger {
+      background: linear-gradient(135deg, #b5433f, #8f2f2c);
+      color: #ffffff;
+      box-shadow: 0 8px 18px -6px rgba(181, 67, 63, 0.4);
+    }
+
+    /* Login screen */
+    #login-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-slate);
+      background-image:
+        radial-gradient(circle at 100% 0%, rgba(169, 118, 47, 0.08), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(122, 43, 69, 0.07), transparent 40%);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .login-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 32px 26px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+    .login-mark {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 10px 24px -8px rgba(122, 43, 69, 0.45);
+    }
+    .login-mark i { color: #fff; font-size: 24px; }
+    .login-card h5 { font-weight: 800; margin-bottom: 4px; }
+    .login-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 22px; }
+    .login-card .form-control { margin-bottom: 12px; text-align: right; }
+    #login-error {
+      color: #b5433f;
+      font-size: 12.5px;
+      font-weight: 700;
+      margin-top: -4px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    #app-content { display: none; }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--border-soft);
+      z-index: 1030;
+      box-shadow: 0 -6px 20px -8px rgba(122, 43, 69, 0.08);
+    }
+
+    .nav-item-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'Cairo', sans-serif;
+      background: none;
+      border: none;
+      width: 33.3%;
+      padding: 8px 0;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+    .nav-item-btn i {
+      font-size: 18px;
+      margin-bottom: 4px;
+      transition: transform 0.2s ease;
+    }
+    .nav-item-btn.active {
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .nav-item-btn.active i {
+      transform: translateY(-2px);
+    }
+    .nav-item-btn.active::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      width: 26px;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--gold);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-mark"><i class="fa-solid fa-lock"></i></div>
+      <h5>تسجيل الدخول</h5>
+      <p>لوحة تحكم  — للأدمن فقط</p>
+      <input type="email" id="login-email" class="form-control" placeholder="البريد الإلكتروني" autocomplete="username">
+      <input type="password" id="login-password" class="form-control" placeholder="كلمة المرور" autocomplete="current-password">
+      <div id="login-error">بيانات الدخول غير صحيحة</div>
+      <button type="button" class="btn-primary-custom" id="login-btn" onclick="handleLogin()">
+        <i class="fa-solid fa-right-to-bracket me-1"></i> دخول
+      </button>
+    </div>
+  </div>
+
+  <!-- App Content (hidden until logged in) -->
+  <div id="app-content">
+
+  <!-- Toast Container (replaces native alert) -->
+  <div id="toast-container"></div>
+
+  <!-- Confirm Modal (replaces native confirm) -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-card">
+      <div class="confirm-icon"><i class="fa-solid fa-trash-can"></i></div>
+      <div class="confirm-message" id="confirm-message">هل تريد المتابعة؟</div>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-btn confirm-btn-cancel" id="confirm-no">إلغاء</button>
+        <button type="button" class="confirm-btn confirm-btn-danger" id="confirm-yes">تأكيد الحذف</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Mobile -->
+  <header class="mobile-header d-flex justify-content-between align-items-center">
+    <div>
+      <h6 class="fw-bold mb-0" id="header-title">
+        <i class="fa-solid fa-receipt me-2" style="color: var(--primary);"></i>الأوردرات الواردة
+      </h6>
+      <small style="color: var(--text-muted); font-size: 11px;" id="header-subtitle">متابعة طلبات العملاء</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm rounded-circle p-2" style="background: var(--primary-soft); color: var(--primary);" onclick="renderOrders()" title="تحديث البيانات">
+        <i class="fa-solid fa-rotate-right"></i>
+      </button>
+      <span class="badge-count" id="total-badge">0</span>
+      <button class="btn-logout" onclick="handleLogout()" title="تسجيل الخروج">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Content Container -->
+  <div class="container py-3">
+
+    <!-- 1. Orders Section -->
+    <section id="orders-section">
+      <div id="orders-container"></div>
+    </section>
+
+    <!-- 2. Products Section -->
+    <section id="products-section" style="display: none;">
+      <div id="products-container"></div>
+    </section>
+
+    <!-- 3. Add Product Section -->
+    <section id="add-product-section" style="display: none;">
+      <div class="card-mobile">
+        <form id="add-product-form" onsubmit="handleAddProduct(event)">
+          <div class="mb-3">
+            <label class="form-label fw-bold small">صورة المنتج</label>
+            <div class="upload-box" onclick="document.getElementById('file-input').click()">
+              <i class="fa-solid fa-cloud-arrow-up fs-2 mb-2" style="color: var(--primary);"></i>
+              <div class="fw-bold fs-6">اضغط لاختيار صورة</div>
+              <small style="color: var(--text-muted);">PNG, JPG, WEBP</small>
+            </div>
+            <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+            <img id="img-preview" class="upload-preview" alt="معاينة الصورة">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold small">اسم المنتج</label>
+            <input type="text" id="prod-name" class="form-control" placeholder="أدخل اسم المنتج" required>
+          </div>
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="form-label fw-bold small">السعر (جنيه)</label>
+              <input type="number" id="prod-price" class="form-control" placeholder="350" required>
+            </div>
+
+            <div class="col-6 mb-3">
+              <label class="form-label fw-bold small">القسم</label>
+              <select id="prod-category" class="form-select" required>
+                <option value="ساعه ">ساعه </option>
+                <option value="اسور">اسور</option>
+                <option value="بنجلز">بنجلز</option>
+                <option value="هاند اتشين">هاند اتشين</option>
+                <option value="نيلز">نيلز</option>
+                <option value="شوجر">شوجر</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold small">وصف المنتج</label>
+            <textarea id="prod-desc" class="form-control" rows="3" placeholder="اكتب تفاصيل أو وصف المنتج..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary-custom">
+            <i class="fa-solid fa-check me-1"></i> حفظ ونشر المنتج
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item-btn active" onclick="switchTab('orders', this)">
+      <i class="fa-solid fa-receipt"></i>
+      <span>الأوردرات</span>
+    </button>
+    <button class="nav-item-btn" onclick="switchTab('products', this)">
+      <i class="fa-solid fa-boxes-stacked"></i>
+      <span>المنتجات</span>
+    </button>
+    <button class="nav-item-btn" onclick="switchTab('add-product', this)">
+      <i class="fa-solid fa-square-plus"></i>
+      <span>إضافة منتج</span>
+    </button>
+  </nav>
+
+  </div> <!-- /#app-content -->
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore, collection, onSnapshot, addDoc, updateDoc,
+      deleteDoc, doc, query, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    /* ---------- Firebase setup ---------- */
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIffXM5yyuAacetUb7CLsfVgcK14wGoyM",
+      authDomain: "velora-dd2b5.firebaseapp.com",
+      projectId: "velora-dd2b5",
+      storageBucket: "velora-dd2b5.firebasestorage.app",
+      messagingSenderId: "194404847695",
+      appId: "1:194404847695:web:d4093c886177f9a1d41a3a",
+      measurementId: "G-4H4RL393ZS"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let uploadedBase64Image = "";
+    let ordersCache = [];
+    let productsCache = [];
+    let listenersStarted = false;
+
+    /* ---------- Auth: gate the whole dashboard behind login ---------- */
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorEl = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+      errorEl.style.display = 'none';
+
+      if (!email || !password) {
+        errorEl.innerText = 'اكتب البريد وكلمة المرور';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.setAttribute('disabled', 'disabled');
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.error(err);
+        errorEl.innerText = 'بيانات الدخول غير صحيحة';
+        errorEl.style.display = 'block';
+      } finally {
+        btn.removeAttribute('disabled');
+      }
+    }
+
+    function handleLogout() {
+      signOut(auth);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      const loginScreen = document.getElementById('login-screen');
+      const appContent = document.getElementById('app-content');
+
+      if (user) {
+        loginScreen.style.display = 'none';
+        appContent.style.display = 'block';
+        if (!listenersStarted) {
+          listenersStarted = true;
+          startRealtimeListeners();
+        }
+      } else {
+        loginScreen.style.display = 'flex';
+        appContent.style.display = 'none';
+      }
+    });
+
+    document.getElementById('login-password').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    /* ---------- Styled toast (replaces alert) ---------- */
+    function showToast(type, message) {
+      const container = document.getElementById('toast-container');
+      const icons = { success: 'fa-circle-check', warning: 'fa-triangle-exclamation', error: 'fa-circle-xmark' };
+      const toast = document.createElement('div');
+      toast.className = `app-toast app-toast-${type}`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-circle-info'}"></i><span>${message}</span>`;
+      toast.style.pointerEvents = 'auto';
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.add('show'));
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+      }, 2600);
+    }
+
+    /* ---------- Styled confirm (replaces confirm) ---------- */
+    function showConfirm(message) {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById('confirm-overlay');
+        document.getElementById('confirm-message').innerText = message;
+
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => overlay.classList.add('show'));
+
+        const btnYes = document.getElementById('confirm-yes');
+        const btnNo = document.getElementById('confirm-no');
+
+        function cleanup(result) {
+          overlay.classList.remove('show');
+          setTimeout(() => { overlay.style.display = 'none'; }, 200);
+          btnYes.removeEventListener('click', onYes);
+          btnNo.removeEventListener('click', onNo);
+          overlay.removeEventListener('click', onOverlayClick);
+          resolve(result);
+        }
+        function onYes() { cleanup(true); }
+        function onNo() { cleanup(false); }
+        function onOverlayClick(e) { if (e.target === overlay) cleanup(false); }
+
+        btnYes.addEventListener('click', onYes);
+        btnNo.addEventListener('click', onNo);
+        overlay.addEventListener('click', onOverlayClick);
+      });
+    }
+
+    function switchTab(tabName, btnElement) {
+      document.querySelectorAll('.nav-item-btn').forEach(el => el.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      document.getElementById('orders-section').style.display = tabName === 'orders' ? 'block' : 'none';
+      document.getElementById('products-section').style.display = tabName === 'products' ? 'block' : 'none';
+      document.getElementById('add-product-section').style.display = tabName === 'add-product' ? 'block' : 'none';
+
+      const titleEl = document.getElementById('header-title');
+      const subTitleEl = document.getElementById('header-subtitle');
+
+      if(tabName === 'orders') {
+        titleEl.innerHTML = `<i class="fa-solid fa-receipt me-2" style="color: var(--primary);"></i>الأوردرات الواردة`;
+        subTitleEl.innerText = 'متابعة طلبات العملاء';
+        renderOrders();
+      } else if(tabName === 'products') {
+        titleEl.innerHTML = `<i class="fa-solid fa-boxes-stacked me-2" style="color: var(--primary);"></i>المنتجات الحالية`;
+        subTitleEl.innerText = 'إدارة معروضات المتجر';
+        renderProducts();
+      } else if(tabName === 'add-product') {
+        titleEl.innerHTML = `<i class="fa-solid fa-square-plus me-2" style="color: var(--primary);"></i>إضافة منتج جديد`;
+        subTitleEl.innerText = 'إدخال بيانات المنتج';
+        document.getElementById('total-badge').innerText = '+';
+      }
+    }
+
+    function handleImageSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          // Resize + compress on a canvas so the Firestore doc stays small and fast to load
+          const MAX_DIM = 900;
+          let { width, height } = img;
+          if (width > height && width > MAX_DIM) {
+            height = Math.round(height * (MAX_DIM / width));
+            width = MAX_DIM;
+          } else if (height > MAX_DIM) {
+            width = Math.round(width * (MAX_DIM / height));
+            height = MAX_DIM;
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          uploadedBase64Image = canvas.toDataURL('image/jpeg', 0.72);
+
+          const preview = document.getElementById('img-preview');
+          preview.src = uploadedBase64Image;
+          preview.style.display = 'block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* ---------- Orders: real-time from Firestore ---------- */
+    function renderOrders() {
+      const orders = ordersCache;
+      const container = document.getElementById('orders-container');
+      const ordersTabActive = document.getElementById('orders-section').style.display !== 'none';
+      if (ordersTabActive) document.getElementById('total-badge').innerText = orders.length;
+      container.innerHTML = '';
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5" style="color: var(--text-muted);">
+            <i class="fa-solid fa-inbox fs-1 mb-3 d-block opacity-50"></i>
+            لا توجد أوردرات واردة حالياً
+          </div>`;
+        return;
+      }
+
+      orders.forEach((order, index) => {
+        const status = order.status || 'جديد';
+        let statusClass = 'status-new';
+        if(status === 'تم التوصيل') statusClass = 'status-done';
+        if(status === 'جاري التحضير') statusClass = 'status-preparing';
+
+        const total = Number(order.total || order.totalPrice || order.price) || 0;
+        const customerName = order.customer || order.customerName || order.name || order.userName || 'عميل بدون اسم';
+        const customerWhatsapp = order.customerWhatsapp || order.whatsapp || order.phone || order.mobile || order.phoneNumber || order.tel || 'غير موضح';
+        const customerAltPhone = order.customerAltPhone || order.altPhone || order.secondaryPhone || null;
+        const customerAddress = order.address || order.customerAddress || order.location || order.fullAddress || order.city || 'غير موضح';
+
+        let itemsFormatted = '';
+        if (Array.isArray(order.items)) {
+          itemsFormatted = order.items.map(i => typeof i === 'object' ? `${i.name || i.title} (x${i.qty || i.quantity || i.count || 1})` : i).join(' • ');
+        } else {
+          itemsFormatted = order.items || order.cart || 'بدون تفاصيل';
+        }
+
+        container.innerHTML += `
+          <div class="card-mobile">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-bold small" style="color: var(--text-muted);">رقم الطلب #${index + 100}</span>
+              <span class="status-badge ${statusClass}">${status}</span>
+            </div>
+
+            <div class="fw-bold fs-6 mb-2">${customerName}</div>
+
+            <div class="customer-info-box small">
+              <div class="mb-1">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i>
+                <span>العنوان: <strong>${customerAddress}</strong></span>
+              </div>
+              <div class="mb-1">
+                <i class="fa-brands fa-whatsapp me-1 text-success fs-6"></i>
+                <span>واتساب: </span>
+                <a href="https://wa.me/${customerWhatsapp.toString().replace(/[^0-9]/g, '')}" target="_blank" class="text-decoration-none fw-bold" style="color: var(--primary);">${customerWhatsapp}</a>
+              </div>
+              ${customerAltPhone ? `
+                <div>
+                  <i class="fa-solid fa-phone me-1 text-primary"></i>
+                  <span>هاتف إضافي: </span>
+                  <a href="tel:${customerAltPhone}" class="text-decoration-none text-dark">${customerAltPhone}</a>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="order-items-box mb-3">
+              <span style="color: var(--text-muted);">الطلبات: </span>
+              <strong>${itemsFormatted}</strong>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-2" style="border-top: 1px solid var(--border-soft);">
+              <div>
+                <span class="small d-block" style="color: var(--text-muted); font-size: 11px;">إجمالي المباشر:</span>
+                <div class="price-tag">${total} ج.م</div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <select class="form-select form-select-sm" style="font-size: 12px; width: 130px;" onchange="updateOrderStatus('${order.docId}', this.value)">
+                  <option value="جديد" ${status==='جديد'?'selected':''}>جديد</option>
+                  <option value="جاري التحضير" ${status==='جاري التحضير'?'selected':''}>جاري التحضير</option>
+                  <option value="تم التوصيل" ${status==='تم التوصيل'?'selected':''}>تم التوصيل</option>
+                </select>
+                <button class="btn btn-sm text-danger border-0 p-2" onclick="deleteOrder('${order.docId}')" title="حذف الطلب">
+                  <i class="fa-solid fa-trash-can fs-6"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    async function updateOrderStatus(docId, newStatus) {
+      try {
+        await updateDoc(doc(db, 'orders', docId), { status: newStatus });
+      } catch (err) {
+        console.error(err);
+        showToast('error', 'حصل خطأ في تحديث الحالة');
+      }
+    }
+
+    async function deleteOrder(docId) {
+      const confirmed = await showConfirm('هل تريد حذف هذا الأوردر؟');
+      if (confirmed) {
+        try {
+          await deleteDoc(doc(db, 'orders', docId));
+          showToast('success', 'تم حذف الطلب بنجاح');
+        } catch (err) {
+          console.error(err);
+          showToast('error', 'حصل خطأ أثناء الحذف');
+        }
+      }
+    }
+
+    /* ---------- Products: real-time from Firestore ---------- */
+    function renderProducts() {
+      const products = productsCache;
+      const container = document.getElementById('products-container');
+      const productsTabActive = document.getElementById('products-section').style.display !== 'none';
+      if (productsTabActive) document.getElementById('total-badge').innerText = products.length;
+      container.innerHTML = '';
+
+      if(products.length === 0) {
+        container.innerHTML = `<div class="text-center py-5" style="color: var(--text-muted);">لا توجد منتجات مسجلة حالياً</div>`;
+        return;
+      }
+
+      products.forEach((prod) => {
+        container.innerHTML += `
+          <div class="card-mobile d-flex gap-3 align-items-center">
+            <img src="${prod.image}" class="prod-img-mobile" alt="${prod.name}">
+            <div class="flex-grow-1">
+              <div class="fw-bold fs-6 mb-1">${prod.name}</div>
+              <div class="fw-bold mb-1" style="color: var(--gold);">${prod.price} ج.م</div>
+              <span class="badge border" style="background: var(--bg-slate); color: var(--text-muted); font-weight: 500;">${prod.category}</span>
+            </div>
+            <button class="btn btn-sm border-0 p-2 text-danger" onclick="deleteProduct('${prod.docId}')">
+              <i class="fa-solid fa-trash-can fs-6"></i>
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    async function handleAddProduct(event) {
+      event.preventDefault();
+      if (!uploadedBase64Image) {
+        showToast('warning', 'يرجى اختيار صورة للمنتج أولاً!');
+        return;
+      }
+      if (uploadedBase64Image.length > 700000) {
+        showToast('warning', 'الصورة كبيرة أوي، اختار صورة أصغر شوية');
+        return;
+      }
+
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+
+      const newProd = {
+        name: document.getElementById('prod-name').value,
+        price: document.getElementById('prod-price').value,
+        category: document.getElementById('prod-category').value,
+        image: uploadedBase64Image,
+        desc: document.getElementById('prod-desc').value,
+        createdAt: serverTimestamp()
+      };
+
+      try {
+        await addDoc(collection(db, 'products'), newProd);
+
+        document.getElementById('add-product-form').reset();
+        document.getElementById('img-preview').style.display = 'none';
+        uploadedBase64Image = "";
+
+        showToast('success', 'تم إضافة المنتج بنجاح!');
+        switchTab('products', document.querySelectorAll('.nav-item-btn')[1]);
+      } catch (err) {
+        console.error(err);
+        showToast('error', 'حصل خطأ أثناء حفظ المنتج');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function deleteProduct(docId) {
+      const confirmed = await showConfirm('هل تريد حذف هذا المنتج؟');
+      if (confirmed) {
+        try {
+          await deleteDoc(doc(db, 'products', docId));
+          showToast('success', 'تم حذف المنتج بنجاح');
+        } catch (err) {
+          console.error(err);
+          showToast('error', 'حصل خطأ أثناء الحذف');
+        }
+      }
+    }
+
+    /* ---------- Real-time listeners (this is what makes it cross-device) — started after login ---------- */
+    function startRealtimeListeners() {
+      const ordersQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+      onSnapshot(ordersQuery, (snapshot) => {
+        ordersCache = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderOrders();
+      }, (err) => {
+        console.error(err);
+        showToast('error', 'مش قادر أوصل لقاعدة البيانات');
+      });
+
+      const productsQuery = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+      onSnapshot(productsQuery, (snapshot) => {
+        productsCache = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
+        renderProducts();
+      }, (err) => {
+        console.error(err);
+        showToast('error', 'مش قادر أوصل لقاعدة البيانات');
+      });
+    }
+
+    /* ---------- Expose handlers used by inline HTML attributes ---------- */
+    window.switchTab = switchTab;
+    window.handleImageSelect = handleImageSelect;
+    window.handleAddProduct = handleAddProduct;
+    window.updateOrderStatus = updateOrderStatus;
+    window.deleteOrder = deleteOrder;
+    window.deleteProduct = deleteProduct;
+    window.renderOrders = renderOrders;
+    window.handleLogin = handleLogin;
+    window.handleLogout = handleLogout;
+  </script>
+</body>
+</html>
